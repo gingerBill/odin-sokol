@@ -1,6 +1,13 @@
 package sokol_app
 
-when ODIN_OS == "windows" do foreign import sapp_lib "sokol_app_d3d11.lib"
+when ODIN_OS == "windows" {
+    when ODIN_DEBUG == true {
+        foreign import sapp_lib "sokol_app_d3d11d.lib"
+    }
+    else {
+        foreign import sapp_lib "sokol_app_d3d11.lib"
+    }
+}
 
 import "core:c"
 
@@ -321,4 +328,9 @@ foreign sapp_lib {
     sapp_run :: proc(d: ^Desc) -> c_int ---
 }
 
+@(default_calling_convention="c")
+foreign sapp_lib {
+    @(link_name="sokol_app_log_callback")    log_callback    :: proc(cb :proc "c" (cstring)) ---
+    @(link_name="sokol_app_assert_callback") assert_callback :: proc(cb :proc "c" (cstring, cstring, int)) ---
+}
 

@@ -1,6 +1,13 @@
 package sokol_gfx
 
-when ODIN_OS == "windows" do foreign import sgfx_lib "sokol_gfx_d3d11.lib"
+when ODIN_OS == "windows" {
+	when ODIN_DEBUG == true {
+		foreign import sgfx_lib "sokol_gfx_d3d11d.lib"
+	}
+	else {
+		foreign import sgfx_lib "sokol_gfx_d3d11.lib"
+	}
+}
 
 import "core:c"
 
@@ -217,4 +224,10 @@ foreign sgfx_lib {
 	sg_init_shader    :: proc(shd_id:  Shader,   desc: ^Shader_Desc) ---
 	sg_init_pipeline  :: proc(pip_id:  Pipeline, desc: ^Pipeline_Desc) ---
 	sg_init_pass      :: proc(pass_id: Pass,     desc: ^Pass_Desc) ---
+}
+
+@(default_calling_convention="c")
+foreign sgfx_lib {
+	@(link_name="sokol_gfx_log_callback")    log_callback    :: proc(cb :proc "c" (cstring)) ---
+	@(link_name="sokol_gfx_assert_callback") assert_callback :: proc(cb :proc "c" (cstring, cstring, int)) ---
 }

@@ -6331,6 +6331,36 @@ _SOKOL_PRIVATE void _sg_update_image(_sg_image_t* img, const sg_image_content* d
 /*== D3D11 BACKEND IMPLEMENTATION ============================================*/
 #elif defined(SOKOL_D3D11)
 
+_SOKOL_PRIVATE bool _sg_d3d11_succeeded(HRESULT hr) {
+    if (SUCCEEDED(hr)) return true;
+
+    switch (hr)
+    {
+        case S_OK: return true;
+        case D3D11_ERROR_FILE_NOT_FOUND                              : SOKOL_LOG("DirectX: Error: D3D11_ERROR_FILE_NOT_FOUND"); return false;
+        case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS               : SOKOL_LOG("DirectX: Error: D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS"); return false;
+        case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS                : SOKOL_LOG("DirectX: Error: D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS"); return false;
+        case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD: SOKOL_LOG("DirectX: Error: D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD"); return false;
+        case DXGI_ERROR_INVALID_CALL                                 : SOKOL_LOG("DirectX: Error: DXGI_ERROR_INVALID_CALL"); return false;
+        case DXGI_ERROR_WAS_STILL_DRAWING                            : SOKOL_LOG("DirectX: Error: DXGI_ERROR_WAS_STILL_DRAWING"); return false;
+        case E_FAIL                                                  : SOKOL_LOG("DirectX: Error: E_FAIL"); return false;
+        case E_INVALIDARG                                            : SOKOL_LOG("DirectX: Error: E_INVALIDARG"); return false;
+        case E_OUTOFMEMORY                                           : SOKOL_LOG("DirectX: Error: E_OUTOFMEMORY"); return false;
+        case E_NOTIMPL                                               : SOKOL_LOG("DirectX: Error: E_NOTIMPL"); return false;
+        case S_FALSE                                                 : SOKOL_LOG("DirectX: Error: S_FALSE"); return false;
+        default                                                      : {
+            char buffer[256];
+            sprintf(buffer, "DirectX: Unknown error code: 0x%x (%d)", hr, hr);
+            SOKOL_LOG(buffer); return false;
+        }
+    }
+
+    return false;
+}
+
+#undef SUCCEEDED
+#define SUCCEEDED(HR) _sg_d3d11_succeeded((HR))
+
 /*-- enum translation functions ----------------------------------------------*/
 _SOKOL_PRIVATE D3D11_USAGE _sg_d3d11_usage(sg_usage usg) {
     switch (usg) {

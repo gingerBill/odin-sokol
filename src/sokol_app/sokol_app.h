@@ -4239,6 +4239,14 @@ _SOKOL_PRIVATE void _sapp_win32_create_window(void) {
         NULL,                       /* hMenu */
         GetModuleHandle(NULL),      /* hInstance */
         NULL);                      /* lParam */
+
+    GetClientRect(_sapp_win32_hwnd, &rect);
+    int screen_x = GetSystemMetrics(SM_CXSCREEN);
+    int screen_y = GetSystemMetrics(SM_CYSCREEN);
+    int pos_x = (screen_x - (rect.right - rect.left)) / 2;
+    int pos_y = (screen_y - (rect.bottom - rect.top)) / 2;
+    SetWindowPos(_sapp_win32_hwnd, NULL, pos_x, pos_y, 0, 0, SWP_NOSIZE);
+
     ShowWindow(_sapp_win32_hwnd, SW_SHOW);
     _sapp_win32_in_create_window = false;
     _sapp_win32_dc = GetDC(_sapp_win32_hwnd);

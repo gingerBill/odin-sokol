@@ -17,4 +17,6 @@ foreign stime_lib {
     ms :: proc(ticks: u64) -> f64 ---
     us :: proc(ticks: u64) -> f64 ---
     ns :: proc(ticks: u64) -> f64 ---
+
+    @(link_name="sokol_time_assert_callback") assert_callback :: proc(cb :proc "c" (cstring, cstring, int)) ---
 }
