@@ -2,6 +2,7 @@ package main
 
 import sg "sokol_gfx"
 import sapp "sokol_app"
+import "core:runtime";
 
 import "core:os"
 
@@ -12,6 +13,7 @@ state: struct {
 };
 
 init_callback :: proc "c" () {
+	context = runtime.default_context();
 	sg.setup({
 		mtl_device                   = sapp.metal_get_device(),
 		mtl_renderpass_descriptor_cb = sapp.metal_get_renderpass_descriptor,
@@ -88,6 +90,7 @@ init_callback :: proc "c" () {
 }
 
 frame_callback :: proc "c" () {
+	context = runtime.default_context();
 	sg.begin_default_pass(state.pass_action, sapp.framebuffer_size());
 	sg.apply_pipeline(state.pip);
 	sg.apply_bindings(state.bind);
@@ -112,7 +115,7 @@ main :: proc() {
 
 event_callback :: proc "c" (event: ^sapp.Event) {
 	if event.type == .KEY_DOWN && !event.key_repeat {
-		switch event.key_code {
+		#partial switch event.key_code {
 		case .ESCAPE:
 			sapp.request_quit();
 		case .Q:
