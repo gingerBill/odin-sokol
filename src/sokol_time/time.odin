@@ -1,6 +1,7 @@
 package sokol_time
 
 when ODIN_OS == "windows" do foreign import stime_lib "sokol_time_d3d11.lib"
+else when ODIN_OS == "darwin" do foreign import stime_lib "sokol_time.a"
 
 import "core:c"
 

@@ -7,6 +7,8 @@ when ODIN_OS == "windows" {
     else {
         foreign import sapp_lib "sokol_app_d3d11.lib"
     }
+} else when ODIN_OS == "darwin" {
+    foreign import sapp_lib "sokol_app_metal.a"
 }
 
 import "core:c"
