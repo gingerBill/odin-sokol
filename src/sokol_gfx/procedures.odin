@@ -8,6 +8,9 @@ when ODIN_OS == "windows" {
 		foreign import sgfx_lib "sokol_gfx_d3d11.lib"
 	}
 }
+else when ODIN_OS == "darwin" {
+	foreign import sgfx_lib "sokol_gfx_metal.a"
+}
 
 import "core:c"
 

@@ -43,34 +43,63 @@ init_callback :: proc "c" () {
 		label = "triangle-vertices",
 	});
 
+	vs_source, fs_source: cstring;
+	#partial switch sg.query_backend() {
+		case .D3D11: {
+			vs_source = `
+				struct vs_in {
+					float4 pos: POS;
+					float4 col: COLOR;
+				};
+				struct vs_out {
+					float4 col: COLOR0;
+					float4 pos: SV_POSITION;
+				};
+				vs_out main(vs_in inp) {
+					vs_out outp;
+					outp.pos = inp.pos;
+					outp.col = inp.col;
+					return outp;
+				}
+			`;
+			fs_source = `
+				float4 main(float4 col: COLOR0): SV_TARGET0 {
+					return col;
+				}
+			`;
+		}
+		case .METAL_MACOS: {
+			vs_source = `
+				#include <metal_stdlib>
+				using namespace metal;
+				struct vs_in {
+					float4 position [[attribute(0)]];
+					float4 color [[attribute(1)]];
+				};
+				struct vs_out {
+					float4 position [[position]];
+					float4 color;
+				};
+				vertex vs_out _main(vs_in inp [[stage_in]]) {
+					vs_out outp;
+					outp.position = inp.position;
+					outp.color = inp.color;
+					return outp;
+				}
+			`;
+			fs_source = `
+				#include <metal_stdlib>
+				using namespace metal;
+				fragment float4 _main(float4 color [[stage_in]]) {
+					return color;
+				}
+			`;
+		}
+	}
 	state.pip = sg.make_pipeline({
 		shader = sg.make_shader({
-			vs = {
-				source = `
-					struct vs_in {
-						float4 pos: POS;
-						float4 col: COLOR;
-					};
-					struct vs_out {
-						float4 col: COLOR0;
-						float4 pos: SV_POSITION;
-					};
-					vs_out main(vs_in inp) {
-						vs_out outp;
-						outp.pos = inp.pos;
-						outp.col = inp.col;
-						return outp;
-					}
-				`,
-			},
-			fs = {
-				source = `
-					float4 main(float4 col: COLOR0): SV_TARGET0 {
-						return col;
-					}
-				`,
-			},
-
+			vs = {source = vs_source},
+			fs = {source = fs_source},
 			attrs = {
 				0 = {sem_name = "POS"},
 				1 = {sem_name = "COLOR"},
