@@ -1,6 +1,6 @@
 package sokol_gfx
 
-when ODIN_OS == "windows" {
+when ODIN_OS == .Windows {
 	when ODIN_DEBUG == true {
 		foreign import sgfx_lib "sokol_gfx_d3d11d.lib"
 	}
@@ -8,7 +8,7 @@ when ODIN_OS == "windows" {
 		foreign import sgfx_lib "sokol_gfx_d3d11.lib"
 	}
 }
-else when ODIN_OS == "darwin" {
+else when ODIN_OS == .Darwin {
 	foreign import sgfx_lib "sokol_gfx_metal.a"
 }
 
