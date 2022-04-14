@@ -1,13 +1,13 @@
 package sokol_app
 
-when ODIN_OS == "windows" {
+when ODIN_OS == .Windows {
     when ODIN_DEBUG == true {
         foreign import sapp_lib "sokol_app_d3d11d.lib"
     }
     else {
         foreign import sapp_lib "sokol_app_d3d11.lib"
     }
-} else when ODIN_OS == "darwin" {
+} else when ODIN_OS == .Darwin {
     foreign import sapp_lib "sokol_app_metal.a"
 }
 
